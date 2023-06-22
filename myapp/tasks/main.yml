@@ -1,0 +1,26 @@
+---
+- name: installmyapp
+  debug:
+- name: Download wordpress # module for download or getting an application
+  ansible.builtin.get_url:
+    url: https://wordpress.org/wordpress-6.2.2.tar.gz
+    dest: /tmp # this is for it to be downloaded to the tmp folder in the server
+    # mode: '0440'
+
+- name: Extract wordpress.tgz into server path # module for to unzip downloaded packages or files
+  ansible.builtin.unarchive:
+    src: /tmp/wordpress-6.2.2.tar.gz # src is used for a path on your local computer
+    remote_src: yes # remote_src is used for a remote path on the server. Should be set to yes
+    dest: /var/www/html
+
+- name: Copy wordpress file
+  ansible.builtin.copy:
+    src: /var/www/html/wordpress/
+    remote_src: yes
+    dest: /var/www/html/
+
+# check_implicit_admin example
+- name: Remove file index.html file from server (delete file)
+  ansible.builtin.file:
+    path: /var/www/html/index.html
+    state: absent

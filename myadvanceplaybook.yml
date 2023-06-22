@@ -1,0 +1,42 @@
+---
+- name: myhelloworldplaybook
+  become: yes # this makes the user become root and sudo
+  gather_facts: yes
+  hosts: all
+  roles:  # field for role/rolename
+    - role: 'geerlingguy.apache'  
+    - role: 'geerlingguy.php'
+    - role: 'geerlingguy.php-mysql'
+    - role: 'geerlingguy.mysql'
+    - role: 'myapp'
+  vars_files: # Defining and calling a dynamic variable via a file. We would not need to pass the -e command in the terminal. This has to be the first vars block
+    - anyi.yml
+
+  # vars: # Defining a variable at the PLAYBOOK level
+  #   mywebsite: www.teach-ansible-today.com/gurus
+
+  tasks:
+    - name: Start service httpd, if not started
+      ansible.builtin.service:
+        name: apache2
+        state: started
+      # become: yes # this makes the user become root and sudo
+    
+    ####### Temporarily removed due to `Remove file task` # Used this section to learn template file #######
+    # - name: Template a file with owner and permissions    
+    #   ansible.builtin.template:
+    #     src: webpage.j2
+    #     dest: /var/www/html/index.html #this is the part where apache2 accepts its files being copied to it or written to it
+    #   # vars: # Defining a variable at the TASK level
+    #   #   myname: Global Tutors
+
+    # Copy contents on wp-config.php from our local file to ec2 server
+    - name: Copy wp-config.php
+      ansible.builtin.copy:
+        src: wp-config.php
+        dest: /var/www/html/
+
+    - name: Copy info.php
+      ansible.builtin.copy:
+        src: info.php
+        dest: /var/www/html/
