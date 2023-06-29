@@ -30,8 +30,14 @@
     #   #   myname: Global Tutors
 
     # Copy contents on wp-config.php from our local file to ec2 server
+    # - name: Copy wp-config.php
+    #   ansible.builtin.copy:
+    #     src: wp-config.php
+    #     dest: /var/www/html/
+
+    # Copy contents on wp-config.php from our local file to ec2 server as a template
     - name: Copy wp-config.php
-      ansible.builtin.copy:
+      ansible.builtin.template:
         src: wp-config.php
         dest: /var/www/html/
 
